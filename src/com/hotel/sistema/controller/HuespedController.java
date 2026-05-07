@@ -27,4 +27,12 @@ public class HuespedController {
     public boolean eliminar(int id) {
         return dao.eliminar(id);
     }
+    
+    public boolean editar(Huesped h) {
+    	return dao.editar(h);
+    }
+    
+    public List<Huesped> buscar(String texto) {
+    	return dao.buscar(texto);
+    }
 }

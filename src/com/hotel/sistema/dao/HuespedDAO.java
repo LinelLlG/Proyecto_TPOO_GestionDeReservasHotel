@@ -74,4 +74,69 @@ public class HuespedDAO {
             return false;
         }
     }
+	
+	public boolean editar(Huesped h) {
+
+		String sql = "UPDATE huesped SET telefono=?, correo=? WHERE id=?";
+
+		try (Connection con = Conexion.getConexion();
+			 PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setString(1, h.getTelefono());
+			ps.setString(2, h.getCorreo());
+			ps.setInt(3, h.getId());
+
+			return ps.executeUpdate() > 0;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public List<Huesped> buscar(String texto) {
+
+		List<Huesped> lista = new ArrayList<>();
+
+		String sql = """
+				SELECT * FROM huesped
+				WHERE nombres LIKE ?
+				OR apellidos LIKE ?
+				OR numero_documento LIKE ?
+				OR telefono LIKE ?
+				OR correo LIKE ?
+				""";
+
+		try (Connection con = Conexion.getConexion();
+			 PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setString(1, "%" + texto + "%");
+			ps.setString(2, "%" + texto + "%");
+			ps.setString(3, "%" + texto + "%");
+			ps.setString(4, "%" + texto + "%");
+			ps.setString(5, "%" + texto + "%");
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				Huesped h = new Huesped();
+
+				h.setId(rs.getInt("id"));
+				h.setTipoDocumento(rs.getString("tipo_documento"));
+				h.setNumeroDocumento(rs.getString("numero_documento"));
+				h.setNombres(rs.getString("nombres"));
+				h.setApellidos(rs.getString("apellidos"));
+				h.setTelefono(rs.getString("telefono"));
+				h.setCorreo(rs.getString("correo"));
+
+				lista.add(h);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+	}
 }
