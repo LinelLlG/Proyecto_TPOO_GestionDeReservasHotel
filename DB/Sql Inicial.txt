@@ -1,0 +1,100 @@
+-- =====================================
+-- CREAR BASE DE DATOS
+-- =====================================
+DROP DATABASE IF EXISTS hotel;
+CREATE DATABASE hotel;
+USE hotel;
+
+-- =====================================
+-- TABLA USUARIO (LOGIN)
+-- =====================================
+CREATE TABLE usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL
+);
+
+-- =====================================
+-- TABLA HUESPED
+-- =====================================
+CREATE TABLE huesped (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_documento VARCHAR(20) NOT NULL,
+    numero_documento VARCHAR(20) UNIQUE NOT NULL,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    correo VARCHAR(100),
+    estado BOOLEAN DEFAULT TRUE
+);
+
+-- =====================================
+-- TABLA HABITACION
+-- =====================================
+CREATE TABLE habitacion (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    numero VARCHAR(10) UNIQUE NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    precio DECIMAL(10,2) NOT NULL,
+    capacidad INT NOT NULL,
+    estado ENUM('Disponible', 'Ocupada', 'Reserva', 'Mantenimiento') DEFAULT 'Disponible'
+);
+
+-- =====================================
+-- TABLA RESERVA
+-- =====================================
+CREATE TABLE reserva (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_huesped INT NOT NULL,
+    id_habitacion INT NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    total DECIMAL(10,2),
+    estado ENUM('Activa', 'Cancelada') DEFAULT 'Activa',
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_reserva_huesped 
+        FOREIGN KEY (id_huesped) REFERENCES huesped(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_reserva_habitacion 
+        FOREIGN KEY (id_habitacion) REFERENCES habitacion(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
+);
+
+-- =====================================
+-- DATOS DE PRUEBA
+-- =====================================
+
+-- Usuario
+INSERT INTO usuario (username, password)
+VALUES ('admin', '1234');
+
+-- Huéspedes
+INSERT INTO huesped (tipo_documento, numero_documento, nombres, apellidos, telefono, correo)
+VALUES 
+('DNI', '12345678', 'Juan', 'Perez', '999888777', 'juan@gmail.com'),
+('DNI', '87654321', 'Maria', 'Lopez', '988777666', 'maria@gmail.com');
+
+-- Habitaciones
+INSERT INTO habitacion (numero, tipo, precio, capacidad)
+VALUES 
+('101', 'Simple', 50.00, 1),
+('102', 'Doble', 80.00, 2),
+('201', 'Suite', 150.00, 4);
+
+-- =====================================
+-- PRUEBA DE RELACIONES
+-- =====================================
+INSERT INTO reserva (id_huesped, id_habitacion, fecha_inicio, fecha_fin, total)
+VALUES (1, 1, '2026-06-10', '2026-06-12', 100.00);
+
+-- =====================================
+-- CONSULTAS DE VERIFICACIÓN
+-- =====================================
+SELECT * FROM usuario;
+SELECT * FROM huesped;
+SELECT * FROM habitacion;
+SELECT * FROM reserva;
