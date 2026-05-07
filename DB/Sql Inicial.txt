@@ -70,7 +70,7 @@ CREATE TABLE reserva (
 
 -- Usuario
 INSERT INTO usuario (username, password)
-VALUES ('admin', '1234');
+VALUES ('admhotel', 'adm123456');
 
 -- Huéspedes
 INSERT INTO huesped (tipo_documento, numero_documento, nombres, apellidos, telefono, correo)
