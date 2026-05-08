@@ -1,8 +1,6 @@
 package com.hotel.sistema.view;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.EventQueue;
 
 import javax.swing.*;
 import javax.swing.JFrame;
