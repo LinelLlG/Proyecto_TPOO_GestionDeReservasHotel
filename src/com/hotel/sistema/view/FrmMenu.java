@@ -71,9 +71,9 @@ public class FrmMenu extends JFrame {
 		});
 
 		itemHabitacion.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, "Abrir módulo Habitaciones");
+		    new FrmHabitacion().setVisible(true);
 		});
-
+		
 		itemReserva.addActionListener(e -> {
 			JOptionPane.showMessageDialog(this, "Abrir módulo Reservas");
 		});
