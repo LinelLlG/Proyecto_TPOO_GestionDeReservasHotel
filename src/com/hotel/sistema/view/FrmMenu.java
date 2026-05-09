@@ -65,9 +65,8 @@ public class FrmMenu extends JFrame {
 		// SALIR DEL SISTEMA
 		itemSalir.addActionListener(e -> System.exit(0));
 
-		// MÓDULOS (por ahora solo mensajes)
+		// MÓDULOS
 		itemHuesped.addActionListener(e -> {
-			// JOptionPane.showMessageDialog(this, "Abrir módulo Huéspedes");
 			new FrmHuesped().setVisible(true);
 		});
 
