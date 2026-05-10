@@ -35,4 +35,9 @@ public class HuespedController {
     public List<Huesped> buscar(String texto) {
     	return dao.buscar(texto);
     }
+    
+    public Huesped buscarPorDocumento(String documento) {
+
+    	return dao.buscarPorDocumento(documento);
+    }
 }

@@ -166,4 +166,39 @@ public class HabitacionDAO {
 		h.setEstado(rs.getString("estado"));
 		return h;
 	}
+	
+	public Habitacion buscarPorNumero(String numero) {
+
+		String sql = """
+			SELECT *
+			FROM habitacion
+			WHERE numero = ?
+		""";
+
+		try (Connection con = Conexion.getConexion();
+			 PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setString(1, numero);
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+
+				Habitacion h = new Habitacion();
+				h.setId(rs.getInt("id"));
+				h.setNumero(rs.getString("numero"));
+				h.setTipo(rs.getString("tipo"));
+				h.setPrecio(rs.getDouble("precio"));
+				h.setCapacidad(rs.getInt("capacidad"));
+				h.setEstado(rs.getString("estado"));
+
+				return h;
+			}
+
+		} catch (Exception e) {
+
+			System.out.println(e.getMessage());
+		}
+
+		return null;
+	}
 }

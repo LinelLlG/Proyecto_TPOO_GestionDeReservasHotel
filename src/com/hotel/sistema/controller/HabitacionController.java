@@ -75,4 +75,9 @@ public class HabitacionController {
 	public List<Habitacion> buscarDisponibles(String filtro) {
 		return dao.buscarDisponibles(filtro);
 	}
+	
+	public Habitacion buscarPorNumero(String numero) {
+
+		return dao.buscarPorNumero(numero);
+	}
 }

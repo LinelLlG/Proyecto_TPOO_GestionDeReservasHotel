@@ -75,7 +75,7 @@ public class FrmMenu extends JFrame {
 		});
 		
 		itemReserva.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, "Abrir módulo Reservas");
+			new FrmReserva().setVisible(true);
 		});
 
 		setLocationRelativeTo(null);
