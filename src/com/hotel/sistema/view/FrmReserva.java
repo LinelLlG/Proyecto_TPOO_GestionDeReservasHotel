@@ -23,6 +23,8 @@ import com.hotel.sistema.model.Habitacion;
 import com.hotel.sistema.controller.HuespedController;
 import com.hotel.sistema.model.Huesped;
 import com.hotel.sistema.controller.ReservaController;
+import com.hotel.sistema.model.Reserva;
+
 import com.toedter.calendar.JDateChooser;
 
 
@@ -46,15 +48,16 @@ public class FrmReserva extends JFrame {
 		// ===== RESERVA =====
 		private JDateChooser dcFechaInicio;
 		private JDateChooser dcFechaFin;
-
 		private JSpinner spCantidadPersonas;
-
 		private JTextField txtTotal;
 
 		// ===== BOTONES =====
 		private JButton btnNuevo;
 		private JButton btnReservar;
 		private JButton btnCancelarReserva;
+		private JButton btnEditar;
+		private JButton btnCheckIn;
+		private JButton btnCheckOut;
 
 		// ===== TABLA =====
 		private JTable tabla;
@@ -211,17 +214,32 @@ public class FrmReserva extends JFrame {
 		// =====================================================
 
 		btnNuevo = new JButton("Nuevo");
-		btnNuevo.setBounds(220, 300, 120, 30);
+		btnNuevo.setBounds(120, 300, 120, 30);
 		contentPane.add(btnNuevo);
 
 		btnReservar = new JButton("Reservar");
-		btnReservar.setBounds(380, 300, 120, 30);
+		btnReservar.setBounds(260, 300, 120, 30);
 		contentPane.add(btnReservar);
+
+		btnEditar = new JButton("Editar");
+		btnEditar.setBounds(400, 300, 120, 30);
+		btnEditar.setEnabled(false);
+		contentPane.add(btnEditar);
 
 		btnCancelarReserva = new JButton("Cancelar");
 		btnCancelarReserva.setBounds(540, 300, 120, 30);
 		btnCancelarReserva.setEnabled(false);
 		contentPane.add(btnCancelarReserva);
+
+		btnCheckIn = new JButton("Check-In");
+		btnCheckIn.setBounds(680, 300, 110, 30);
+		btnCheckIn.setEnabled(false);
+		contentPane.add(btnCheckIn);
+
+		btnCheckOut = new JButton("Check-Out");
+		btnCheckOut.setBounds(800, 300, 110, 30);
+		btnCheckOut.setEnabled(false);
+		contentPane.add(btnCheckOut);
 
 		// =====================================================
 		// TABLA
@@ -250,8 +268,11 @@ public class FrmReserva extends JFrame {
 		btnNuevo.addActionListener(e -> nuevo());
 		btnReservar.addActionListener(e -> reservar());
 		btnCancelarReserva.addActionListener(e -> cancelarReserva());
+		btnEditar.addActionListener(e -> editarReserva());
 		btnBuscarHuesped.addActionListener(e -> buscarHuesped());
 		btnBuscarHabitacion.addActionListener(e -> buscarHabitacion());
+		btnCheckIn.addActionListener(e -> realizarCheckIn());
+		btnCheckOut.addActionListener(e -> realizarCheckOut());
 
 		tabla.getSelectionModel().addListSelectionListener(e -> cargarDatosTabla());
 
@@ -401,23 +422,77 @@ public class FrmReserva extends JFrame {
 
 		txtDocumento.setText("");
 		txtNombre.setText("");
-
 		txtNumeroHabitacion.setText("");
 		txtTipoHabitacion.setText("");
 		txtPrecio.setText("");
-
 		txtTotal.setText("");
-
 		spCantidadPersonas.setValue(1);
-
+		
 		dcFechaInicio.setDate(null);
 		dcFechaFin.setDate(null);
-
 		tabla.clearSelection();
-
 		btnReservar.setEnabled(true);
-
 		btnCancelarReserva.setEnabled(false);
+		btnCheckIn.setEnabled(false);
+		btnCheckOut.setEnabled(false);
+		btnEditar.setEnabled(false);
+	}
+	
+	private void editarReserva() {
+
+		if (idReservaSeleccionada == -1) {
+
+			JOptionPane.showMessageDialog(this, "Seleccione una reserva");
+
+			return;
+		}
+
+		try {
+
+			LocalDate inicio = dcFechaInicio.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+			LocalDate fin = dcFechaFin.getDate().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+			int cantidad = (int) spCantidadPersonas.getValue();
+
+			// ===== VALIDAR CAPACIDAD =====
+
+			if (cantidad > capacidadHabitacion) {
+
+				JOptionPane.showMessageDialog(this, "La cantidad supera la capacidad");
+
+				return;
+			}
+
+			double total = controller.calcularTotal(inicio, fin, Double.parseDouble(txtPrecio.getText()));
+
+			Reserva r = new Reserva();
+
+			r.setId(idReservaSeleccionada);
+			r.setIdHuesped(idHuesped);
+			r.setIdHabitacion(idHabitacion);
+			r.setFechaInicio(inicio);
+			r.setFechaFin(fin);
+			r.setCantidadPersonas(cantidad);
+			r.setPrecioNoche(Double.parseDouble(txtPrecio.getText()));
+			r.setTotal(total);
+			r.setEstado("Activa");
+
+			String resultado = controller.editar(r);
+
+			if (resultado.equals("OK")) {
+
+				JOptionPane.showMessageDialog(this, "Reserva actualizada");
+				listar();
+				limpiar();
+
+			} else {
+
+				JOptionPane.showMessageDialog(this, resultado);
+			}
+
+		} catch (Exception e) {
+
+			JOptionPane.showMessageDialog(this, "Datos inválidos");
+		}
 	}
 	
 	private void buscarHuesped() {
@@ -488,6 +563,52 @@ public class FrmReserva extends JFrame {
 		}
 	}
 	
+	private void realizarCheckIn() {
+
+		if (idReservaSeleccionada == -1) {
+
+			JOptionPane.showMessageDialog(this, "Seleccione una reserva");
+
+			return;
+		}
+
+		boolean ok =
+				controller.realizarCheckIn(idReservaSeleccionada, idHabitacion);
+
+		if (ok) {
+
+			JOptionPane.showMessageDialog(this, "Check-In realizado");
+			listar();
+			limpiar();
+
+		} else {
+
+			JOptionPane.showMessageDialog(this, "No se pudo realizar check-in");
+		}
+	}
+	
+	private void realizarCheckOut() {
+
+		if (idReservaSeleccionada == -1) {
+
+			JOptionPane.showMessageDialog(this, "Seleccione una reserva");
+			return;
+		}
+
+		boolean ok = controller.realizarCheckOut(idReservaSeleccionada, idHabitacion);
+
+		if (ok) {
+
+			JOptionPane.showMessageDialog(this, "Check-Out realizado");
+			listar();
+			limpiar();
+
+		} else {
+
+			JOptionPane.showMessageDialog(this, "No se pudo realizar check-out");
+		}
+	}
+	
 	private void listar() {
 
 		modelo.setRowCount(0);
@@ -523,7 +644,7 @@ public class FrmReserva extends JFrame {
 
 		idHuesped =r.getIdHuesped();
 		idHabitacion =r.getIdHabitacion();
-		txtDocumento.setText(String.valueOf(r.getIdHuesped()));
+		txtDocumento.setText(r.getDocumentoHuesped());
 		txtNombre.setText(r.getNombreHuesped());
 		txtNumeroHabitacion.setText(r.getNumeroHabitacion());
 		dcFechaInicio.setDate(java.sql.Date.valueOf(r.getFechaInicio()));
@@ -531,10 +652,47 @@ public class FrmReserva extends JFrame {
 		spCantidadPersonas.setValue(r.getCantidadPersonas());
 		txtTotal.setText(String.valueOf(r.getTotal()));
 
-		// ===== ESTADO =====
+		// ===== CARGAR DATOS COMPLETOS HABITACION =====
+		Habitacion hab = habitacionController.buscarPorNumero(r.getNumeroHabitacion());
 
-		btnCancelarReserva.setEnabled(true);
+		if (hab != null) {
+
+			txtTipoHabitacion.setText(hab.getTipo());
+			txtPrecio.setText(String.valueOf(hab.getPrecio()));
+			capacidadHabitacion = hab.getCapacidad();
+			spCantidadPersonas.setModel(new SpinnerNumberModel(1, 1, capacidadHabitacion, 1));
+			spCantidadPersonas.setValue(r.getCantidadPersonas());
+		}
+		
+		// ===== DESHABILITAR TODO =====
 		btnReservar.setEnabled(false);
+		btnEditar.setEnabled(false);
+		btnCancelarReserva.setEnabled(false);
+		btnCheckIn.setEnabled(false);
+		btnCheckOut.setEnabled(false);
+
+		// ===== ESTADO RESERVA =====
+		String estado = r.getEstado();
+
+		// ===== RESERVA ACTIVA =====
+		if (estado.equals("Activa")) {
+
+			// CANCELAR
+			btnCancelarReserva.setEnabled(true);
+
+			// VALIDAR EDICION
+			long dias = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), r.getFechaInicio());
+			btnEditar.setEnabled(dias > 1);
+
+			// CHECK IN
+			btnCheckIn.setEnabled(true);
+		}
+
+		// ===== HOSPEDADO =====
+		if (estado.equals("Hospedado")) {
+
+			btnCheckOut.setEnabled(true);
+		}
 	}
 	
 	private void limpiarHabitacion() {

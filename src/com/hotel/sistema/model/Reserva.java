@@ -24,6 +24,7 @@ public class Reserva {
     
     private String nombreHuesped;
     private String numeroHabitacion;
+    private String documentoHuesped;
 
     // ===== CONSTRUCTOR VACIO =====
     public Reserva() {
@@ -140,5 +141,13 @@ public class Reserva {
 
     public void setNumeroHabitacion(String numeroHabitacion) {
     	this.numeroHabitacion = numeroHabitacion;
+    }
+    
+    public String getDocumentoHuesped() {
+    	return documentoHuesped;
+    }
+
+    public void setDocumentoHuesped(String documentoHuesped) {
+    	this.documentoHuesped = documentoHuesped;
     }
 }

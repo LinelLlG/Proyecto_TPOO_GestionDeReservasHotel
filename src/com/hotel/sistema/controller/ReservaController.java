@@ -27,6 +27,12 @@ public class ReservaController {
 
         return dao.cancelar(idReserva, idHabitacion);
     }
+    
+    // ===== EDITAR =====
+    public String editar(Reserva r) {
+
+    	return dao.editar(r);
+    }
 
     // ===== VERIFICAR DISPONIBILIDAD =====
     public boolean verificarDisponibilidad(int idHabitacion, LocalDate fechaInicio, LocalDate fechaFin) {
@@ -44,5 +50,17 @@ public class ReservaController {
     public Reserva buscarPorId(int id) {
 
     	return dao.buscarPorId(id);
+    }
+    
+    // ===== CHECK - IN =====
+    public boolean realizarCheckIn(int idReserva, int idHabitacion) {
+
+    	return dao.realizarCheckIn(idReserva, idHabitacion);
+    }
+    
+    // ===== CEHCK - OUT =====
+    public boolean realizarCheckOut(int idReserva, int idHabitacion) {
+
+    	return dao.realizarCheckOut(idReserva, idHabitacion);
     }
 }
