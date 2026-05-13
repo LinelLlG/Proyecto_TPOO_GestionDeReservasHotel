@@ -1,8 +1,5 @@
 package com.hotel.sistema.view;
 
-import java.awt.*;
-import java.awt.EventQueue;
-
 import java.util.List;
 
 import javax.swing.*;
@@ -270,7 +267,6 @@ public class FrmHuesped extends JFrame {
 		if (controller.editar(h)) {
 
 			JOptionPane.showMessageDialog(this, "Actualizado correctamente");
-
 			listar();
 			limpiar();
 
@@ -340,9 +336,7 @@ public class FrmHuesped extends JFrame {
 		// ===== DOCUMENTO =====
 		if (numero.isEmpty()) {
 
-			JOptionPane.showMessageDialog(this,
-					"Ingrese número de documento");
-
+			JOptionPane.showMessageDialog(this, "Ingrese número de documento");
 			txtNumero.requestFocus();
 
 			return false;
@@ -353,9 +347,7 @@ public class FrmHuesped extends JFrame {
 
 			if (!numero.matches("\\d+")) {
 
-				JOptionPane.showMessageDialog(this,
-						"El DNI solo debe contener números");
-
+				JOptionPane.showMessageDialog(this, "El DNI solo debe contener números");
 				txtNumero.requestFocus();
 
 				return false;
@@ -363,9 +355,7 @@ public class FrmHuesped extends JFrame {
 
 			if (numero.length() != 8) {
 
-				JOptionPane.showMessageDialog(this,
-						"El DNI debe tener 8 dígitos");
-
+				JOptionPane.showMessageDialog(this, "El DNI debe tener 8 dígitos");
 				txtNumero.requestFocus();
 
 				return false;
@@ -375,9 +365,7 @@ public class FrmHuesped extends JFrame {
 		// ===== NOMBRE =====
 		if (nombre.isEmpty()) {
 
-			JOptionPane.showMessageDialog(this,
-					"Ingrese nombres");
-
+			JOptionPane.showMessageDialog(this, "Ingrese nombres");
 			txtNombre.requestFocus();
 
 			return false;
@@ -386,9 +374,7 @@ public class FrmHuesped extends JFrame {
 		// ===== APELLIDO =====
 		if (apellido.isEmpty()) {
 
-			JOptionPane.showMessageDialog(this,
-					"Ingrese apellidos");
-
+			JOptionPane.showMessageDialog(this, "Ingrese apellidos");
 			txtApellido.requestFocus();
 
 			return false;
@@ -399,9 +385,7 @@ public class FrmHuesped extends JFrame {
 
 			if (!telefono.matches("\\d+")) {
 
-				JOptionPane.showMessageDialog(this,
-						"El teléfono solo debe contener números");
-
+				JOptionPane.showMessageDialog(this, "El teléfono solo debe contener números");
 				txtTelefono.requestFocus();
 
 				return false;
@@ -413,9 +397,7 @@ public class FrmHuesped extends JFrame {
 
 			if (!correo.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
 
-				JOptionPane.showMessageDialog(this,
-						"Ingrese un correo válido");
-
+				JOptionPane.showMessageDialog(this, "Ingrese un correo válido");
 				txtCorreo.requestFocus();
 
 				return false;

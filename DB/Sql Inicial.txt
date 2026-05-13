@@ -49,7 +49,9 @@ CREATE TABLE reserva (
     id_habitacion INT NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
+    cantidad_personas INT NOT NULL,
     total DECIMAL(10,2),
+    precio_noche DECIMAL(10,2),
     estado ENUM('Activa', 'Cancelada', 'Hospedado', 'Finalizada') DEFAULT 'Activa',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

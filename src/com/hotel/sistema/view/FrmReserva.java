@@ -1,6 +1,8 @@
 package com.hotel.sistema.view;
 
 import java.awt.Font;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,9 +16,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
 
 import com.hotel.sistema.controller.HabitacionController;
 import com.hotel.sistema.model.Habitacion;
@@ -293,7 +292,6 @@ public class FrmReserva extends JFrame {
 	private void reservar() {
 
 		// ===== VALIDAR HUESPED =====
-
 		if (idHuesped == -1) {
 
 			JOptionPane.showMessageDialog(this, "Debe seleccionar un huésped");
@@ -302,7 +300,6 @@ public class FrmReserva extends JFrame {
 		}
 
 		// ===== VALIDAR HABITACION =====
-
 		if (idHabitacion == -1) {
 
 			JOptionPane.showMessageDialog(this, "Debe seleccionar una habitación");
@@ -311,7 +308,6 @@ public class FrmReserva extends JFrame {
 		}
 
 		// ===== VALIDAR FECHAS =====
-
 		if (dcFechaInicio.getDate() == null || dcFechaFin.getDate() == null) {
 
 			JOptionPane.showMessageDialog(this, "Debe seleccionar fechas");
@@ -320,12 +316,10 @@ public class FrmReserva extends JFrame {
 		}
 
 		// ===== CONVERTIR FECHAS =====
-
 		LocalDate fechaInicio = dcFechaInicio.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate fechaFin = dcFechaFin.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
 		// ===== VALIDAR RANGO =====
-
 		if (fechaFin.isBefore(fechaInicio) || fechaFin.isEqual(fechaInicio)) {
 
 			JOptionPane.showMessageDialog(this, "La fecha fin debe ser mayor");
@@ -334,11 +328,9 @@ public class FrmReserva extends JFrame {
 		}
 
 		// ===== CANTIDAD PERSONAS =====
-
 		int cantidad = (int) spCantidadPersonas.getValue();
 		
 		// ===== VALIDAR CAPACIDAD =====
-
 		if (cantidad > capacidadHabitacion) {
 
 			JOptionPane.showMessageDialog(this, "La cantidad de personas supera " + "la capacidad de la habitación");
@@ -346,17 +338,14 @@ public class FrmReserva extends JFrame {
 		}
 
 		// ===== PRECIO =====
-
 		double precio = Double.parseDouble(txtPrecio.getText());
 
 		// ===== CALCULAR TOTAL =====
-
 		double total = controller.calcularTotal(fechaInicio, fechaFin, precio);
 		txtTotal.setText(String.format("%.2f", total));
 
 		// ===== CREAR OBJETO =====
-
-		com.hotel.sistema.model.Reserva r = new com.hotel.sistema.model.Reserva();
+		Reserva r = new Reserva();
 
 		r.setIdHuesped(idHuesped);
 		r.setIdHabitacion(idHabitacion);
@@ -454,7 +443,6 @@ public class FrmReserva extends JFrame {
 			int cantidad = (int) spCantidadPersonas.getValue();
 
 			// ===== VALIDAR CAPACIDAD =====
-
 			if (cantidad > capacidadHabitacion) {
 
 				JOptionPane.showMessageDialog(this, "La cantidad supera la capacidad");
@@ -532,7 +520,6 @@ public class FrmReserva extends JFrame {
 		if (h != null) {
 
 			// VALIDAR DISPONIBLE
-
 			if (!h.getEstado().equalsIgnoreCase("Disponible")) {
 
 				JOptionPane.showMessageDialog(this, "La habitación no está disponible");
@@ -547,7 +534,6 @@ public class FrmReserva extends JFrame {
 			spCantidadPersonas.setModel(new SpinnerNumberModel(1, 1, capacidadHabitacion, 1));
 
 			// VALIDAR CAPACIDAD
-
 			int cantidad = (int) spCantidadPersonas.getValue();
 
 			if (cantidad > h.getCapacidad()) {
@@ -637,8 +623,7 @@ public class FrmReserva extends JFrame {
 		idReservaSeleccionada = (int) modelo.getValueAt(fila, 0);
 
 		// ===== BUSCAR RESERVA COMPLETA =====
-
-		com.hotel.sistema.model.Reserva r = controller.buscarPorId(idReservaSeleccionada);
+		Reserva r = controller.buscarPorId(idReservaSeleccionada);
 
 		if (r == null) { return; }
 

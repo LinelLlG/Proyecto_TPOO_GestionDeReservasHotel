@@ -202,7 +202,6 @@ public class ReservaDAO {
     			r.setEstado(rs.getString("estado"));
 
     			// ===== NUEVOS CAMPOS =====
-
     			r.setNombreHuesped(rs.getString("nombres") + " " + rs.getString("apellidos"));
     			r.setNumeroHabitacion(rs.getString("numero"));
     			r.setDocumentoHuesped(rs.getString("numero_documento"));
@@ -249,8 +248,7 @@ public class ReservaDAO {
     }
 
     // ===== CAMBIAR ESTADO HABITACION =====
-    private void cambiarEstadoHabitacion(int idHabitacion,
-                                         String estado) {
+    private void cambiarEstadoHabitacion(int idHabitacion, String estado) {
 
         String sql = """
             UPDATE habitacion
@@ -294,7 +292,6 @@ public class ReservaDAO {
     	}
 
     	// VALIDAR DISPONIBILIDAD
-
     	if (!verificarDisponibilidad(
     			r.getIdHabitacion(),
     			r.getFechaInicio(),
@@ -305,7 +302,6 @@ public class ReservaDAO {
     	}
 
     	// ===== ACTUALIZAR =====
-
     	String sql = """
     		UPDATE reserva
     		SET
@@ -358,8 +354,7 @@ public class ReservaDAO {
     	""";
 
     	try (Connection con = Conexion.getConexion();
-    		 PreparedStatement ps =
-    				 con.prepareStatement(sql)) {
+    		 PreparedStatement ps = con.prepareStatement(sql)) {
 
     		ps.setInt(1, id);
     		ResultSet rs = ps.executeQuery();
@@ -378,7 +373,6 @@ public class ReservaDAO {
     			r.setEstado(rs.getString("estado"));
 
     			// ===== EXTRA =====
-
     			r.setNombreHuesped(rs.getString("nombres") + " " + rs.getString("apellidos"));
     			r.setNumeroHabitacion(rs.getString("numero"));
     			r.setDocumentoHuesped(rs.getString("numero_documento"));
