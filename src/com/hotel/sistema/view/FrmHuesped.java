@@ -2,9 +2,15 @@ package com.hotel.sistema.view;
 
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -34,6 +40,7 @@ public class FrmHuesped extends JFrame {
 	 * Create the frame.
 	 */
 	public FrmHuesped() {
+		setResizable(false);
 		setTitle("Gestión de Huéspedes");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 750, 450);
@@ -172,6 +179,14 @@ public class FrmHuesped extends JFrame {
 		h.setApellidos(txtApellido.getText());
 		h.setTelefono(txtTelefono.getText());
 		h.setCorreo(txtCorreo.getText());
+		
+		Huesped exist = controller.buscarPorDocumento(h.getNumeroDocumento());
+		
+		if(exist != null) {
+			JOptionPane.showMessageDialog(this, "El Numero de Documento ingresado ya se encuentra registrado","Error",JOptionPane.ERROR_MESSAGE);
+			listar();
+			return;
+		}
 
 		if (controller.guardar(h)) {
 			JOptionPane.showMessageDialog(this, "Guardado correctamente");

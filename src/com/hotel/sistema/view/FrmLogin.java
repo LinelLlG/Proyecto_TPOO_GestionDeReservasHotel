@@ -1,10 +1,12 @@
 package com.hotel.sistema.view;
 
-import java.awt.*;
-
-import javax.swing.*;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.hotel.sistema.controller.LoginController;
@@ -21,12 +23,13 @@ public class FrmLogin extends JFrame {
 	 * Create the frame.
 	 */
 	public FrmLogin() {
+		setResizable(false);
 		setTitle("Login - Sistema Hotel");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 350, 250);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
-		contentPane.setLayout(null); // importante para posicionar
+		contentPane.setLayout(null); // important for positioning
 		setContentPane(contentPane);
 		
 		// ===== LABEL USUARIO =====
@@ -58,6 +61,18 @@ public class FrmLogin extends JFrame {
 		btnLogin.addActionListener(e -> validarLogin());
 
 		setLocationRelativeTo(null);
+		
+		txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+		    public void keyPressed(java.awt.event.KeyEvent e) {
+		        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) validarLogin();
+		    }
+		});
+		
+		txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+		    public void keyPressed(java.awt.event.KeyEvent e) {
+		        if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) validarLogin();
+		    }
+		});
 	}
 	
 	// ===== MÉTODO LOGIN =====
@@ -66,15 +81,28 @@ public class FrmLogin extends JFrame {
 		String user = txtUsuario.getText();
 		String pass = new String(txtPassword.getPassword());
 
+		if (user.trim().isEmpty() || pass.trim().isEmpty()) {
+		    JOptionPane.showMessageDialog(this,
+		        "Debe ingresar usuario y contraseña.",
+		        "Campos requeridos",
+		        JOptionPane.WARNING_MESSAGE);
+		    return;
+		}
+		
 		LoginController controller = new LoginController();
 
 		if (controller.login(user, pass)) {
 
-			JOptionPane.showMessageDialog(this, "Bienvenido");
-
-			// abrir menú
+			// open menu
 			new FrmMenu().setVisible(true);
 			dispose();
+			
+			javax.swing.Timer timer = new javax.swing.Timer(3000, null);
+			JOptionPane pane = new JOptionPane("Bienvenido", JOptionPane.INFORMATION_MESSAGE);
+			javax.swing.JDialog dialog = pane.createDialog(this, "Login");
+			timer.addActionListener(t -> { dialog.dispose(); timer.stop(); });
+			timer.start();
+			dialog.setVisible(true);
 
 		} else {
 			JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos");

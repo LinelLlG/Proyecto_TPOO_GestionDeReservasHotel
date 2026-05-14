@@ -174,14 +174,8 @@ public class ReservaDAO {
     		INNER JOIN habitacion ha
     			ON r.id_habitacion = ha.id
     		ORDER BY
-				CASE r.estado
-					WHEN 'Activa' THEN 1
-					WHEN 'Hospedado' THEN 2
-					WHEN 'Finalizada' THEN 3
-					WHEN 'Cancelada' THEN 4
-					ELSE 5
-				END,
-				r.fecha_inicio ASC
+				
+				r.fecha_inicio DESC
     	""";
 
     	try (Connection con = Conexion.getConexion();
@@ -234,10 +228,14 @@ public class ReservaDAO {
             int filas = ps.executeUpdate();
 
             if (filas > 0) {
+            	
+            	int quantityA = quantityActivo(idHabitacion);
+            	int quantityH = quantityHospedado(idHabitacion);
 
-                cambiarEstadoHabitacion(idHabitacion, "Disponible");
-                return true;
+                cambiarEstadoHabitacion(idHabitacion, quantityA == 0 && quantityH == 0 ? "Disponible" : (quantityA != 0 && quantityH == 0 ? "En Reserva" :  (quantityH != 0 && quantityA == 0 ? "Ocupada" : "Disponible")));
             }
+            
+            return true;
 
         } catch (Exception e) {
 
@@ -434,10 +432,10 @@ public class ReservaDAO {
 
     		if (filas > 0) {
 
-    			cambiarEstadoHabitacion(idHabitacion, "Disponible");
-
-    			return true;
+    			cambiarEstadoHabitacion(idHabitacion, quantityActivo(idHabitacion) == 0 ? "Disponible" : "En Reserva");
     		}
+    		
+    		return true;
 
     	} catch (Exception e) {
 
@@ -445,5 +443,60 @@ public class ReservaDAO {
     	}
 
     	return false;
+    }
+    
+    
+    public int quantityHospedado(int idHabitacion) {
+    	String sql = """
+                SELECT COUNT(*)
+                FROM reserva
+                WHERE id_habitacion = ?
+                AND estado IN ('Hospedado')
+            """;
+
+    	try (Connection con = Conexion.getConexion();
+    		 PreparedStatement ps = con.prepareStatement(sql)) {
+
+    		ps.setInt(1, idHabitacion);
+    		ResultSet rs = ps.executeQuery();
+
+    		if (rs.next()) {
+
+    			return rs.getInt(1);
+    		}
+
+    	} catch (Exception e) {
+
+    		System.out.println("Error check-out: " + e.getMessage());
+    	}
+
+    	return 0;
+    }
+    
+    public int quantityActivo(int idHabitacion) {
+    	String sql = """
+                SELECT COUNT(*)
+                FROM reserva
+                WHERE id_habitacion = ?
+                AND estado IN ('Activa')
+            """;
+
+    	try (Connection con = Conexion.getConexion();
+    		 PreparedStatement ps = con.prepareStatement(sql)) {
+
+    		ps.setInt(1, idHabitacion);
+    		ResultSet rs = ps.executeQuery();
+
+    		if (rs.next()) {
+
+    			return rs.getInt(1);
+    		}
+
+    	} catch (Exception e) {
+
+    		System.out.println("Error check-out: " + e.getMessage());
+    	}
+
+    	return 0;
     }
 }

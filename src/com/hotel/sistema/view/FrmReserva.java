@@ -77,6 +77,7 @@ public class FrmReserva extends JFrame {
 	 * Create the frame.
 	 */
 	public FrmReserva() {
+		setResizable(false);
 		setTitle("Gestión de Reservas");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 950, 600);
@@ -196,6 +197,19 @@ public class FrmReserva extends JFrame {
 		contentPane.add(lblCantidad);
 
 		spCantidadPersonas = new JSpinner(new SpinnerNumberModel(1, 1, 20, 1));
+		spCantidadPersonas.addChangeListener(e -> {
+		    int valor = (int) spCantidadPersonas.getValue();
+		    if (valor < 1) {
+		        spCantidadPersonas.setValue(1);
+		    }
+		    if (capacidadHabitacion > 0 && valor > capacidadHabitacion) {
+		        spCantidadPersonas.setValue(capacidadHabitacion);
+		        JOptionPane.showMessageDialog(this,
+		            "El máximo permitido es " + capacidadHabitacion + " persona(s).",
+		            "Capacidad excedida",
+		            JOptionPane.WARNING_MESSAGE);
+		    }
+		});
 		spCantidadPersonas.setBounds(690, 240, 70, 25);
 		contentPane.add(spCantidadPersonas);
 
@@ -212,7 +226,7 @@ public class FrmReserva extends JFrame {
 		// BOTONES
 		// =====================================================
 
-		btnNuevo = new JButton("Nuevo");
+		btnNuevo = new JButton("Limpiar");
 		btnNuevo.setBounds(120, 300, 120, 30);
 		contentPane.add(btnNuevo);
 
@@ -318,6 +332,13 @@ public class FrmReserva extends JFrame {
 		// ===== CONVERTIR FECHAS =====
 		LocalDate fechaInicio = dcFechaInicio.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		LocalDate fechaFin = dcFechaFin.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		
+		// ===== VALIDAR DISPONIBILIDAD =====
+		Boolean isAvailable = controller.verificarDisponibilidad(idHabitacion, fechaInicio, fechaFin);
+		if (!isAvailable) {
+		    JOptionPane.showMessageDialog(this, "Habitación no disponible", "Alerta", JOptionPane.WARNING_MESSAGE);
+		    return;
+		}
 
 		// ===== VALIDAR RANGO =====
 		if (fechaFin.isBefore(fechaInicio) || fechaFin.isEqual(fechaInicio)) {
@@ -488,8 +509,11 @@ public class FrmReserva extends JFrame {
 		String documento = JOptionPane.showInputDialog(this, "Ingrese documento:");
 
 		if (documento == null || documento.trim().isEmpty()) {
-
-			return;
+		    JOptionPane.showMessageDialog(this,
+		        "El valor ingresado no es válido. Debe ingresar un número de documento.",
+		        "Valor inválido",
+		        JOptionPane.WARNING_MESSAGE);
+		    return;
 		}
 
 		Huesped h = huespedController.buscarPorDocumento(documento);
@@ -502,7 +526,17 @@ public class FrmReserva extends JFrame {
 
 		} else {
 
-			JOptionPane.showMessageDialog(this, "Huésped no encontrado");
+			int reintentar = JOptionPane.showConfirmDialog(
+		        this,
+		        "Huésped con documento \"" + documento + "\" no encontrado.\n¿Desea intentar con otro documento?",
+		        "No encontrado",
+		        JOptionPane.YES_NO_OPTION,
+		        JOptionPane.WARNING_MESSAGE
+		    );
+			
+		    if (reintentar == JOptionPane.YES_OPTION) {
+		        buscarHuesped();
+		    }
 		}
 	}
 	
@@ -511,8 +545,11 @@ public class FrmReserva extends JFrame {
 		String numero = JOptionPane.showInputDialog(this, "Ingrese número habitación:");
 
 		if (numero == null || numero.trim().isEmpty()) {
-
-			return;
+		    JOptionPane.showMessageDialog(this,
+		        "El valor ingresado no es válido. Debe ingresar un número de habitación.",
+		        "Valor inválido",
+		        JOptionPane.WARNING_MESSAGE);
+		    return;
 		}
 
 		Habitacion h = habitacionController.buscarPorNumero(numero);
@@ -520,11 +557,11 @@ public class FrmReserva extends JFrame {
 		if (h != null) {
 
 			// VALIDAR DISPONIBLE
-			if (!h.getEstado().equalsIgnoreCase("Disponible")) {
+			//if (!h.getEstado().equalsIgnoreCase("Disponible")) {
 
-				JOptionPane.showMessageDialog(this, "La habitación no está disponible");
-				return;
-			}
+				//JOptionPane.showMessageDialog(this, "La habitación no está disponible");
+				//return;
+			//}
 
 			idHabitacion = h.getId();
 			txtNumeroHabitacion.setText(h.getNumero());
@@ -545,7 +582,17 @@ public class FrmReserva extends JFrame {
 
 		} else {
 
-			JOptionPane.showMessageDialog(this, "Habitación no encontrada");
+			int reintentar = JOptionPane.showConfirmDialog(
+		        this,
+		        "Habitación número \"" + numero + "\" no encontrada.\n¿Desea intentar con otro número?",
+		        "No encontrada",
+		        JOptionPane.YES_NO_OPTION,
+		        JOptionPane.WARNING_MESSAGE
+		    );
+			
+		    if (reintentar == JOptionPane.YES_OPTION) {
+		        buscarHabitacion();
+		    }
 		}
 	}
 	

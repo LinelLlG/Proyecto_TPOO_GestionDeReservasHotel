@@ -97,7 +97,7 @@ public class HabitacionDAO {
 	}
 
 	public boolean cambiarEstado(int id, String estado) {
-	    String sql = "UPDATE habitacion SET estado=? WHERE id=?";
+	    String sql = "UPDATE habitacion SET estado=? WHERE id=? AND estado IN ('Disponible', 'Mantenimiento')";
 	    try (Connection con = Conexion.getConexion();
 	         PreparedStatement ps = con.prepareStatement(sql)) {
 	        ps.setString(1, estado);
@@ -108,6 +108,7 @@ public class HabitacionDAO {
 	        return false;
 	    }
 	}
+	
 	public List<Habitacion> listar() {
 		List<Habitacion> lista = new ArrayList<Habitacion>();
 		String sql = "SELECT * FROM habitacion ORDER BY numero";
@@ -200,5 +201,19 @@ public class HabitacionDAO {
 		}
 
 		return null;
+	}
+	
+	public boolean tieneReservaActiva(int id) {
+		String sql = "SELECT COUNT(*) FROM reserva WHERE habitacion_id = ? AND estado = ?";
+		try (Connection con = Conexion.getConexion();
+			 PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setInt(1, id);
+			ps.setString(2, "Activa");
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) return rs.getInt(1) > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

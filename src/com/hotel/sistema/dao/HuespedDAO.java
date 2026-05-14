@@ -140,6 +140,7 @@ public class HuespedDAO {
 		return lista;
 	}
 	
+	
 	public Huesped buscarPorDocumento(String documento) {
 
 		String sql = """
