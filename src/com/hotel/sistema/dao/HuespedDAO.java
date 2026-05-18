@@ -139,4 +139,42 @@ public class HuespedDAO {
 
 		return lista;
 	}
+	
+	
+	public Huesped buscarPorDocumento(String documento) {
+
+		String sql = """
+			SELECT *
+			FROM huesped
+			WHERE numero_documento = ?
+		""";
+
+		try (Connection con = Conexion.getConexion();
+			 PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setString(1, documento);
+
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+
+				Huesped h = new Huesped();
+				h.setId(rs.getInt("id"));
+				h.setTipoDocumento(rs.getString("tipo_documento"));
+				h.setNumeroDocumento(rs.getString("numero_documento"));
+				h.setNombres(rs.getString("nombres"));
+				h.setApellidos(rs.getString("apellidos"));
+				h.setTelefono(rs.getString("telefono"));
+				h.setCorreo(rs.getString("correo"));
+
+				return h;
+			}
+
+		} catch (Exception e) {
+
+			System.out.println(e.getMessage());
+		}
+
+		return null;
+	}
 }

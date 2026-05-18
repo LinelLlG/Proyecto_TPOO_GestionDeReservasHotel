@@ -39,13 +39,14 @@ public class FrmHabitacion extends JFrame {
 	private int idSeleccionado = -1;
 
 	private static final String[] TIPOS   = {"Simple", "Doble", "Suite", "Familiar"};
-	private static final String[] ESTADOS = {"Disponible", "Ocupada", "En reserva", "Mantenimiento"};
+	private static final String[] ESTADOS = {"Disponible", "Mantenimiento"};
 	private static final String[] FILTROS = {"Todos", "Simple", "Doble", "Suite", "Familiar"};
 
 	/**
 	 * Create the frame.
 	 */
 	public FrmHabitacion() {
+		setResizable(false);
 		setTitle("Gestión de Habitaciones");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 780, 510);
@@ -378,6 +379,7 @@ public class FrmHabitacion extends JFrame {
 	private void cambiarEstado() {
 		if (idSeleccionado == -1) return;
 		String nuevoEstado = cmbEstado.getSelectedItem().toString();
+		
 		if (controller.cambiarEstado(idSeleccionado, nuevoEstado)) {
 			JOptionPane.showMessageDialog(this, "Estado cambiado a: " + nuevoEstado);
 			cargarTabla();

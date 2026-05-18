@@ -37,7 +37,7 @@ CREATE TABLE habitacion (
     tipo VARCHAR(50) NOT NULL,
     precio DECIMAL(10,2) NOT NULL,
     capacidad INT NOT NULL,
-    estado ENUM('Disponible', 'Ocupada', 'Reserva', 'Mantenimiento') DEFAULT 'Disponible'
+    estado ENUM('Disponible', 'Ocupada', 'En Reserva', 'Mantenimiento') DEFAULT 'Disponible'
 );
 
 -- =====================================
@@ -49,8 +49,10 @@ CREATE TABLE reserva (
     id_habitacion INT NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
+    cantidad_personas INT NOT NULL DEFAULT 1,
     total DECIMAL(10,2),
-    estado ENUM('Activa', 'Cancelada') DEFAULT 'Activa',
+    precio_noche DECIMAL(10,2),
+    estado ENUM('Activa', 'Cancelada', 'Hospedado', 'Finalizada') DEFAULT 'Activa',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_reserva_huesped 

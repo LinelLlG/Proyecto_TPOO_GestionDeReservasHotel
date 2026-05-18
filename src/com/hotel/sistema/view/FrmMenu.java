@@ -1,9 +1,11 @@
 package com.hotel.sistema.view;
 
-import java.awt.EventQueue;
-
-import javax.swing.*;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -16,6 +18,7 @@ public class FrmMenu extends JFrame {
 	 * Create the frame.
 	 */
 	public FrmMenu() {
+		setResizable(false);
 		setTitle("Sistema de Reservas - Menú Principal");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 400);
@@ -65,9 +68,8 @@ public class FrmMenu extends JFrame {
 		// SALIR DEL SISTEMA
 		itemSalir.addActionListener(e -> System.exit(0));
 
-		// MÓDULOS (por ahora solo mensajes)
+		// MÓDULOS
 		itemHuesped.addActionListener(e -> {
-			// JOptionPane.showMessageDialog(this, "Abrir módulo Huéspedes");
 			new FrmHuesped().setVisible(true);
 		});
 
@@ -76,7 +78,7 @@ public class FrmMenu extends JFrame {
 		});
 		
 		itemReserva.addActionListener(e -> {
-			JOptionPane.showMessageDialog(this, "Abrir módulo Reservas");
+			new FrmReserva().setVisible(true);
 		});
 
 		setLocationRelativeTo(null);

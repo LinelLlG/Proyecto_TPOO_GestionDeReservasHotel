@@ -30,10 +30,10 @@ CREATE TABLE `habitacion` (
   `tipo` varchar(50) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
   `capacidad` int NOT NULL,
-  `estado` enum('Disponible','Ocupada','Reserva','Mantenimiento') DEFAULT 'Disponible',
+  `estado` enum('Disponible','Ocupada','En reserva','Mantenimiento') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `numero` (`numero`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `habitacion` (
 
 LOCK TABLES `habitacion` WRITE;
 /*!40000 ALTER TABLE `habitacion` DISABLE KEYS */;
-INSERT INTO `habitacion` VALUES (1,'101','Simple',50.00,1,'Disponible'),(2,'102','Doble',80.00,2,'Disponible'),(3,'201','Suite',150.00,4,'Disponible');
+INSERT INTO `habitacion` VALUES (1,'101','Simple',50.00,1,'Disponible'),(2,'102','Doble',80.00,2,'En reserva'),(3,'201','Suite',150.00,4,'Disponible');
 /*!40000 ALTER TABLE `habitacion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,7 +64,7 @@ CREATE TABLE `huesped` (
   `estado` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `numero_documento` (`numero_documento`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,9 +91,10 @@ CREATE TABLE `reserva` (
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `total` decimal(10,2) DEFAULT NULL,
-  `estado` enum('Activa','Cancelada') DEFAULT 'Activa',
+  `estado` enum('Activa','Cancelada','Hospedado','Finalizada') NOT NULL,
   `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `cantidad_personas` int NOT NULL,
+  `precio_noche` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_reserva_huesped` (`id_huesped`),
   KEY `fk_reserva_habitacion` (`id_habitacion`),
@@ -108,7 +109,7 @@ CREATE TABLE `reserva` (
 
 LOCK TABLES `reserva` WRITE;
 /*!40000 ALTER TABLE `reserva` DISABLE KEYS */;
-INSERT INTO `reserva` VALUES (1,1,1,'2026-06-10','2026-06-12',100.00,'Activa','2026-05-06 17:15:50',0);
+INSERT INTO `reserva` VALUES (1,1,1,'2026-06-10','2026-06-12',100.00,'Cancelada','2026-05-06 17:15:50',0,0.00);
 /*!40000 ALTER TABLE `reserva` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-06 18:11:36
+-- Dump completed on 2026-05-13 10:47:21

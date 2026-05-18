@@ -97,7 +97,7 @@ public class HabitacionDAO {
 	}
 
 	public boolean cambiarEstado(int id, String estado) {
-	    String sql = "UPDATE habitacion SET estado=? WHERE id=?";
+	    String sql = "UPDATE habitacion SET estado=? WHERE id=? AND estado IN ('Disponible', 'Mantenimiento')";
 	    try (Connection con = Conexion.getConexion();
 	         PreparedStatement ps = con.prepareStatement(sql)) {
 	        ps.setString(1, estado);
@@ -108,6 +108,7 @@ public class HabitacionDAO {
 	        return false;
 	    }
 	}
+	
 	public List<Habitacion> listar() {
 		List<Habitacion> lista = new ArrayList<Habitacion>();
 		String sql = "SELECT * FROM habitacion ORDER BY numero";
@@ -165,5 +166,54 @@ public class HabitacionDAO {
 		h.setCapacidad(rs.getInt("capacidad"));
 		h.setEstado(rs.getString("estado"));
 		return h;
+	}
+	
+	public Habitacion buscarPorNumero(String numero) {
+
+		String sql = """
+			SELECT *
+			FROM habitacion
+			WHERE numero = ?
+		""";
+
+		try (Connection con = Conexion.getConexion();
+			 PreparedStatement ps = con.prepareStatement(sql)) {
+
+			ps.setString(1, numero);
+			ResultSet rs = ps.executeQuery();
+
+			if (rs.next()) {
+
+				Habitacion h = new Habitacion();
+				h.setId(rs.getInt("id"));
+				h.setNumero(rs.getString("numero"));
+				h.setTipo(rs.getString("tipo"));
+				h.setPrecio(rs.getDouble("precio"));
+				h.setCapacidad(rs.getInt("capacidad"));
+				h.setEstado(rs.getString("estado"));
+
+				return h;
+			}
+
+		} catch (Exception e) {
+
+			System.out.println(e.getMessage());
+		}
+
+		return null;
+	}
+	
+	public boolean tieneReservaActiva(int id) {
+		String sql = "SELECT COUNT(*) FROM reserva WHERE habitacion_id = ? AND estado = ?";
+		try (Connection con = Conexion.getConexion();
+			 PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setInt(1, id);
+			ps.setString(2, "Activa");
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) return rs.getInt(1) > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
